@@ -18,43 +18,43 @@ Initialize and configure FPNN SDK.
 
 ### com.fpnn.Config Fields
 
-* Config.taskThreadPoolConfig.initThreadCount
+* **Config.taskThreadPoolConfig.initThreadCount**
 
 	Inited threads count of SDK task thread pool. Default value is 1.
 
-* Config.taskThreadPoolConfig.perfectThreadCount
+* **Config.taskThreadPoolConfig.perfectThreadCount**
 
 	Max resident threads count of SDK task thread pool. Default value is 2.
 
-* Config.taskThreadPoolConfig.maxThreadCount
+* **Config.taskThreadPoolConfig.maxThreadCount**
 
 	Max threads count of SDK task thread pool, including resident threads and temporary threads. Default value is 4.
 
-* Config.taskThreadPoolConfig.maxQueueLengthLimitation
+* **Config.taskThreadPoolConfig.maxQueueLengthLimitation**
 
 	Max tasks count of SDK task thread pool. Default value is 0, means no limitation.
 
-* Config.taskThreadPoolConfig.tempLatencySeconds
+* **Config.taskThreadPoolConfig.tempLatencySeconds**
 
 	How many seconds are waited for the next dispatched task before the temporary thread exit. Default value is 60.
 
-* Config.globalConnectTimeoutSeconds
+* **Config.globalConnectTimeoutSeconds**
 
 	Global client connecting timeout setting when no special connecting timeout are set for a client or connect function.
 
 	Default is 5 seconds.
 
-* Config.globalQuestTimeoutSeconds
+* **Config.globalQuestTimeoutSeconds**
 
 	Global quest timeout setting when no special quest timeout are set for a client or sendQuest function.
 
 	Default is 5 seconds.
 
-* Config.maxPayloadSize
+* **Config.maxPayloadSize**
 
 	Max bytes limitation for the quest & answer package. Default is 4MB.
 
-* Config.errorRecorder
+* **Config.errorRecorder**
 
 	Instance of com.fpnn.common.ErrorRecoder implemented. Default is null.
 
@@ -103,17 +103,16 @@ Initialize and configure FPNN SDK.
 
 	Auto connect. Note: This parameter is AUTO CONNECT, not KEEP connection.
 
-### Methods
 
-#### Config & Properties Methods
+### Config & Properties Methods
 
-##### public string Endpoint()
+#### public string Endpoint()
 
 	public string Endpoint();
 
 Return current endpoint.
 
-##### public ClientStatus Status()
+#### public ClientStatus Status()
 
 	public ClientStatus Status();
 
@@ -125,51 +124,51 @@ Values:
 + ClientStatus.Connecting
 + ClientStatus.Connected
 
-##### public bool IsConnected()
+#### public bool IsConnected()
 
 	public bool IsConnected();
 
 Return client current is connected or not.
 
 
-##### public void SetErrorRecorder(common.ErrorRecorder recorder)
+#### public void SetErrorRecorder(common.ErrorRecorder recorder)
 
 	public void SetErrorRecorder(common.ErrorRecorder recorder);
 
 Config the ErrorRecorder instance for current client. Default is null.
 
 
-### Connect & Close
+### Connect & Close Methods
 
 
-##### public void AsyncConnect()
+#### public void AsyncConnect()
 
 	public void AsyncConnect();
 
 .....
 
 
-##### public bool SyncConnect()
+#### public bool SyncConnect()
 
 	public bool SyncConnect();
 
 ......
 
 
-##### public void AsyncReconnect()
+#### public void AsyncReconnect()
 
 	public void AsyncReconnect();
 
 .....
 
 
-##### public bool SyncReconnect()
+#### public bool SyncReconnect()
 
 	public bool SyncReconnect();
 
 ........
 
-##### public void Close()
+#### public void Close()
 
 	public void Close();
 
@@ -177,41 +176,41 @@ Config the ErrorRecorder instance for current client. Default is null.
 
 ### Event Methods
 
-##### public void SetConnectionConnectedDelegate(ConnectionConnectedDelegate ccd)
+#### public void SetConnectionConnectedDelegate(ConnectionConnectedDelegate ccd)
 
 	public void SetConnectionConnectedDelegate(ConnectionConnectedDelegate ccd);
 
 .... ....
 
-##### public void SetConnectionCloseDelegate(ConnectionCloseDelegate cwcd)
+#### public void SetConnectionCloseDelegate(ConnectionCloseDelegate cwcd)
 
 	public void SetConnectionCloseDelegate(ConnectionCloseDelegate cwcd);
 
 ....
 
-##### public void SetQuestProcessor(IQuestProcessor processor)
+#### public void SetQuestProcessor(IQuestProcessor processor)
 
 	public void SetQuestProcessor(IQuestProcessor processor);
 
 .....
 
-### Send Quest & Answer
+### Send Quest & Answer Methods
 
 
-##### public bool SendQuest(Quest quest, IAnswerCallback callback, int timeout = 0)
+#### public bool SendQuest(Quest quest, IAnswerCallback callback, int timeout = 0)
 
 	public bool SendQuest(Quest quest, IAnswerCallback callback, int timeout = 0);
 
 .....
 
-##### public bool SendQuest(Quest quest, AnswerDelegate callback, int timeout = 0)
+#### public bool SendQuest(Quest quest, AnswerDelegate callback, int timeout = 0)
 
 	public bool SendQuest(Quest quest, AnswerDelegate callback, int timeout = 0);
 
 .....
 
 
-##### public Answer SendQuest(Quest quest, int timeout = 0)
+#### public Answer SendQuest(Quest quest, int timeout = 0)
 
 	public Answer SendQuest(Quest quest, int timeout = 0);
 
@@ -219,7 +218,7 @@ Config the ErrorRecorder instance for current client. Default is null.
 
 
 
-##### public void SendAnswer(Answer answer)
+#### public void SendAnswer(Answer answer)
 
 	public void SendAnswer(Answer answer);
 
