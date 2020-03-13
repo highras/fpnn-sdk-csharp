@@ -2,78 +2,74 @@
 
 [TOC]
 
-## Install & Update
+## Depends
 
+* [msgpack-csharp](https://github.com/highras/msgpack-csharp)
 
-### Install
+### Compatibility Version:
 
-	go get github.com/highras/fpnn-sdk-go/src/fpnn
+C# .Net Standard 2.0
 
-### Update
+### Capability in Funture
 
-	go get -u github.com/highras/fpnn-sdk-go/src/fpnn
-
-### Use
-
-	import "github.com/highras/fpnn-sdk-go/src/fpnn"
-
+Encryption Capability.
 
 ## Usage
 
+### Using package
+
+	using com.fpnn;
+	using com.fpnn.proto;
+
+## API docs
+
+### Init (Unity is REQUIRED, other is optional)
+
+**Init for Unity MUST in the main thread.**
+
+	using com.fpnn;
+	ClientEngine.Init();
+	ClientEngine.Init(Config config);
+
 ### Create
 
-	client := fpnn.NewTCPClient(endpoint string)
+	TCPClient client = new TCPClient(string host, int port, bool autoConnect = true);
+	TCPClient client = TCPClient.Create(string host, int port, bool autoConnect = true);
+	TCPClient client = TCPClient.Create(string endpoint, bool autoConnect = true);
 
 **endpoint** format: `"hostname/ip" + ":" + "port"`.  
 e.g. `"localhost:8000"`
 
-
 ### Configure (Optional)
 
-* Basic configs
+#### Set Duplex Mode (Server Push)
 
-		client.SetAutoReconnect(autoReconnect bool)
-		client.SetConnectTimeOut(timeout time.Duration)
-		client.SetQuestTimeOut(timeout time.Duration)
-		client.SetLogger(logger *log.Logger)
+		client.SetQuestProcessor(IQuestProcessor processor);
 
-* Set Duplex Mode (Server Push)
+#### Set connection events' callbacks
 
-		client.SetQuestProcessor(questProcessor QuestProcessor)
-
-* Set connection events' callbacks
-
-		client.SetOnConnectedCallback(onConnected func(connId uint64))
-		client.SetOnClosedCallback(onClosed func(connId uint64))
-
-* Config encrypted connection
-	
-		client.EnableEncryptor(pemKeyPath string)
-		client.EnableEncryptor(pemKeyData []byte)
-
-	FPNN Go SDK using **ECC**/**ECDH** to exchange the secret key, and using **AES-128** or **AES-256** in **CFB** mode to encrypt the whole session in **stream** way.
-
+		client.SetConnectionConnectedDelegate(ConnectionConnectedDelegate ccd);
+		client.SetConnectionCloseDelegate(ConnectionCloseDelegate cwcd);
 
 ### Send Quest
 
-	answer, err := client.SendQuest(quest *Quest)
-	answer, err := client.SendQuest(quest *Quest, timeout time.Duration)
+	//-- Sync method
+	Answer answer = client.SendQuest(Quest quest, int timeout = 0);
 
-	err := client.SendQuestWithCallback(quest *Quest, callback AnswerCallback)
-	err := client.SendQuestWithCallback(quest *Quest, callback AnswerCallback, timeout time.Duration)
-
-	err := client.SendQuestWithLambda(quest *Quest, callback func(answer *Answer, errorCode int))
-	err := client.SendQuestWithLambda(quest *Quest, callback func(answer *Answer, errorCode int), timeout time.Duration)
+	//-- Async methods
+	bool status = client.SendQuest(Quest quest, AnswerDelegate callback, int timeout = 0);
+	bool status = client.SendQuest(Quest quest, IAnswerCallback callback, int timeout = 0);
 
 
 ### Close (Optional)
 
-	client.Close()
+	client.Close();
 
 
 ### SDK Version
 
-	fmt.Println("FPNN Go SDK Version:", fpnn.SDKVersion)
+	C# `Console.WriteLine("com.fpnn.Config.Version");`
+	Unity `Debug.Log("com.fpnn.Config.Version");`
 
 ## API docs
 
@@ -82,23 +78,23 @@ Please refer: [API docs](API.md)
 
 ## Directory structure
 
-* **<fpnn-sdk-go>/src**
+* **\<fpnn-sdk-csharp\>/fpnn-sdk**
 
 	Codes of SDK.
 
-* **<fpnn-sdk-go>/example**
+* **\<fpnn-sdk-csharp\>/examples**
 
 	Examples codes for using this SDK.  
-	Testing server is <fpnn>/core/test/serverTest. Refer: [Cpp codes of serverTest](https://github.com/highras/fpnn/blob/master/core/test/serverTest.cpp)
+	Testing server is \<fpnn\>/core/test/serverTest. Refer: [Cpp codes of serverTest](https://github.com/highras/fpnn/blob/master/core/test/serverTest.cpp)
 
-* **<fpnn-sdk-go>/test**
+* **\<fpnn-sdk-csharp\>/tests**
 
-	+ **<fpnn-sdk-go>/test/asyncStressClient.go**
+	+ **\<fpnn-sdk-csharp\>/tests/asyncStressClient**
 
 		Stress & Concurrent testing codes for SDK.  
 		Testing server is <fpnn>/core/test/serverTest. Refer: [Cpp codes of serverTest](https://github.com/highras/fpnn/blob/master/core/test/serverTest.cpp)
 
-	+ **<fpnn-sdk-go>/test/singleClientConcurrentTest.go**
+	+ **\<fpnn-sdk-csharp\>/tests/singleClientConcurrentTest**
 
 		Stability testing codes for SDK.  
 		Testing server is <fpnn>/core/test/serverTest. Refer: [Cpp codes of serverTest](https://github.com/highras/fpnn/blob/master/core/test/serverTest.cpp)
