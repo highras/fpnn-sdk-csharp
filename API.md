@@ -71,74 +71,162 @@ Initialize and configure FPNN SDK.
 
 	RTM servers endpoint. Please get your project endpoint from RTM Console.
 
-* pid:
+* host:
 
-	Project ID. Please get your project id from RTM Console.
+	Target server host name or IP address.
 
-* uid:
+* port:
 
-	User id assigned by your project.
+	Target server port.
 
-* serverPushProcessor:
+* autoConnect:
 
-	Instance of events processor implemented com.fpnn.rtm.IRTMQuestProcessor.
-
-	Please refer [Event Process](EventProcess.md)
+	Auto connect. Note: This parameter is AUTO CONNECT, not KEEP connection.
 
 ### Properties
 
 * **ConnectTimeout**
 
-		public int ConnectTimeout { get; set; }
+		public volatile int ConnectTimeout { get; set; }
 
-	Connecting/Login timeout for this RTMClient instance. Default is 0, meaning using the global config. 
+	Connecting timeout in seconds for current TCPClient instance. Default is 0, meaning using the global config. 
 
-* **public int QuestTimeout**
+* **QuestTimeout**
 
-		public int QuestTimeout { get; set; }
+		public volatile int QuestTimeout { get; set; }
 
-	Quest timeout for this RTMClient instance. Default is 0, meaning using the global config.
+	Quest timeout in seconds for current TCPClient instance. Default is 0, meaning using the global config.
 
-* **public int Pid**
+* **AutoConnect**
 
-		public int Pid { get; }
+		public volatile bool AutoConnect { get; set; }
 
-	Project ID.
-
-* **public int Uid**
-
-		public int Uid { get; }
-
-	User ID assigned by you project.
-
-* **public RTMClient.ClientStatus Status**
-
-		public RTMClient.ClientStatus Status { get; }
-
-	RTM client current status.
-
-	Values:
-
-		+ ClientStatus.Closed
-		+ ClientStatus.Connecting
-		+ ClientStatus.Connected
-
-* **public com.fpnn.common.ErrorRecorder ErrorRecorder**
-
-		public com.fpnn.common.ErrorRecorder ErrorRecorder { set; }
-
-	Config the ErrorRecorder instance for this RTMClient. Default is null.
-
-
-### Delegates
-
-Please refer [RTM Delegates](Delegates.md)
-
-### Event Process
-
-Please refer [Event Process](EventProcess.md)
+	Auto connect. Note: This parameter is AUTO CONNECT, not KEEP connection.
 
 ### Methods
 
-#### Login & Logout Functions
+#### Config & Properties Methods
+
+##### public string Endpoint()
+
+	public string Endpoint();
+
+Return current endpoint.
+
+##### public ClientStatus Status()
+
+	public ClientStatus Status();
+
+Return client current status.
+
+Values:
+
++ ClientStatus.Closed
++ ClientStatus.Connecting
++ ClientStatus.Connected
+
+##### public bool IsConnected()
+
+	public bool IsConnected();
+
+Return client current is connected or not.
+
+
+##### public void SetErrorRecorder(common.ErrorRecorder recorder)
+
+	public void SetErrorRecorder(common.ErrorRecorder recorder);
+
+Config the ErrorRecorder instance for current client. Default is null.
+
+
+### Connect & Close
+
+
+##### public void AsyncConnect()
+
+	public void AsyncConnect();
+
+.....
+
+
+##### public bool SyncConnect()
+
+	public bool SyncConnect();
+
+......
+
+
+##### public void AsyncReconnect()
+
+	public void AsyncReconnect();
+
+.....
+
+
+##### public bool SyncReconnect()
+
+	public bool SyncReconnect();
+
+........
+
+##### public void Close()
+
+	public void Close();
+
+......
+
+### Event Methods
+
+##### public void SetConnectionConnectedDelegate(ConnectionConnectedDelegate ccd)
+
+	public void SetConnectionConnectedDelegate(ConnectionConnectedDelegate ccd);
+
+.... ....
+
+##### public void SetConnectionCloseDelegate(ConnectionCloseDelegate cwcd)
+
+	public void SetConnectionCloseDelegate(ConnectionCloseDelegate cwcd);
+
+....
+
+##### public void SetQuestProcessor(IQuestProcessor processor)
+
+	public void SetQuestProcessor(IQuestProcessor processor);
+
+.....
+
+### Send Quest & Answer
+
+
+##### public bool SendQuest(Quest quest, IAnswerCallback callback, int timeout = 0)
+
+	public bool SendQuest(Quest quest, IAnswerCallback callback, int timeout = 0);
+
+.....
+
+##### public bool SendQuest(Quest quest, AnswerDelegate callback, int timeout = 0)
+
+	public bool SendQuest(Quest quest, AnswerDelegate callback, int timeout = 0);
+
+.....
+
+
+##### public Answer SendQuest(Quest quest, int timeout = 0)
+
+	public Answer SendQuest(Quest quest, int timeout = 0);
+
+.....
+
+
+
+##### public void SendAnswer(Answer answer)
+
+	public void SendAnswer(Answer answer);
+
+....
+
+
+
+
+
 
