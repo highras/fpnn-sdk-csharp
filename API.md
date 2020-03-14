@@ -261,6 +261,13 @@ Parameters:
 
 	The API or interface are requested by the server pushed quest.
 
+`QuestProcessDelegate`:
+
+Please return answer for two way quest, and `null` for one way quest.
+
+If an AsyncAnswer instance is created in delegate function, or `AdvanceAnswer.SendAnswer(Answer answer)` is called in delegate function, the delegate function **MUST** return `null` for two way quest.
+
+
 ### Send Quest & Answer Methods
 
 
