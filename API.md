@@ -145,34 +145,34 @@ Config the ErrorRecorder instance for current client. Default is null.
 
 	public void AsyncConnect();
 
-.....
+Start an asynchronous connecting. The connecting timeout can be configured by `ConnectTimeout` property.
 
 
 #### public bool SyncConnect()
 
 	public bool SyncConnect();
 
-......
+Do a synchronous connecting. The connecting timeout can be configured by `ConnectTimeout` property.
 
 
 #### public void AsyncReconnect()
 
 	public void AsyncReconnect();
 
-.....
+Start an asynchronous connecting after closing the current connection. The connecting timeout can be configured by `ConnectTimeout` property.
 
 
 #### public bool SyncReconnect()
 
 	public bool SyncReconnect();
 
-........
+Do a synchronous connecting after closing the current connection. The connecting timeout can be configured by `ConnectTimeout` property.
 
 #### public void Close()
 
 	public void Close();
 
-......
+Close the current connection. Calling the method in all cases is safe.
 
 ### Event Methods
 
@@ -180,19 +180,86 @@ Config the ErrorRecorder instance for current client. Default is null.
 
 	public void SetConnectionConnectedDelegate(ConnectionConnectedDelegate ccd);
 
-.... ....
+Config the connecting callback. Whether connected or not, the callback will be called.
+
+Prototype:
+
+	public delegate void ConnectionConnectedDelegate(Int64 connectionId, string endpoint, bool connected);
+
+Parameters:
+
++ `Int64 connectionId`
+
+	Unique id when the connection is connected. When the connection closing callback returned, this id may be reused by another connection.
+
+	If connecting is failure, this id is 0. 
+
++ `string endpoint`
+
+	Endpoint of the target server for this connection.
+
++ `bool connected`
+
+	Connecting successful or not.
+
 
 #### public void SetConnectionCloseDelegate(ConnectionCloseDelegate cwcd)
 
 	public void SetConnectionCloseDelegate(ConnectionCloseDelegate cwcd);
 
-....
+Config the closing callback for connected connection.
+
+Prototype:
+
+	public delegate void ConnectionCloseDelegate(Int64 connectionId, string endpoint, bool causedByError);
+
+Parameters:
+
++ `Int64 connectionId`
+
+	Unique connection id before the callbakc returned. When the callback returned, this id may be reused by another connection.
+
++ `string endpoint`
+
+	Endpoint of the target server for this connection.
+
++ `bool causedByError`
+
+	Connection closing is triggered by error or normal close (e.g. motivated calling Close function, or normal shutdown).
+
 
 #### public void SetQuestProcessor(IQuestProcessor processor)
 
 	public void SetQuestProcessor(IQuestProcessor processor);
 
-.....
+Config processor for server push.
+
+	public delegate Answer QuestProcessDelegate(Int64 connectionId, string endpoint, Quest quest);
+
+    public interface IQuestProcessor
+    {
+        QuestProcessDelegate GetQuestProcessDelegate(string method);
+    }
+
+Parameters:
+
++ `Int64 connectionId`
+
+	Unique id when the connection is connected. When the connection closing callback returned, this id may be reused by another connection.
+
+	If connecting is failure, this id is 0. 
+
++ `string endpoint`
+
+	Endpoint of the target server for this connection.
+
++ `Quest quest`
+
+	Server pushed quest. Return answer for two way quest, and `null` for one way quest.
+
++ `string method`
+
+	The API or interface are requested by the server pushed quest.
 
 ### Send Quest & Answer Methods
 
@@ -201,31 +268,66 @@ Config the ErrorRecorder instance for current client. Default is null.
 
 	public bool SendQuest(Quest quest, IAnswerCallback callback, int timeout = 0);
 
-.....
+Start an asynchronous request.
+
+	public interface IAnswerCallback
+    {
+        void OnAnswer(Answer answer);
+        void OnException(Answer answer, int errorCode);
+    }
+
+If request successful, the `OnAnswer` interface will be called;  
+if failed, the `OnException` interface will be called. In failed case, the `Answer answer` maybe `null`.
 
 #### public bool SendQuest(Quest quest, AnswerDelegate callback, int timeout = 0)
 
 	public bool SendQuest(Quest quest, AnswerDelegate callback, int timeout = 0);
 
-.....
+Start an asynchronous request.
+
+	public delegate void AnswerDelegate(Answer answer, int errorCode);
+
+If errorCode is 0 (com.fpnn.ErrorCode.FPNN_EC_OK), means request is successful;  
+else, the failed reason is hinted by the errorCode. For failed case,  `Answer answer` maybe `null`.
 
 
 #### public Answer SendQuest(Quest quest, int timeout = 0)
 
 	public Answer SendQuest(Quest quest, int timeout = 0);
 
-.....
-
-
+Request server in synchonous way.
 
 #### public void SendAnswer(Answer answer)
 
 	public void SendAnswer(Answer answer);
 
-....
+Send an answer in unforeseen case.
 
 
+## FPNN AsyncAnswer
 
+### Constructors
 
+	public static AsyncAnswer Create();
 
+Create an asynchonous handler to do an asynchonous answer return in future.
 
+If the AsyncAnswer instance is created, the `QuestProcessDelegate` **MUST** return `null` for two way quest.
+
+**This static method MUST & ONLY can be called in the `QuestProcessDelegate` function for server pushed quest.**
+
+### Method
+
+	public bool SendAnswer(Answer answer);
+
+Return an answer for two way quest. This method **ONLY** can be called once for an AsyncAnswer instance.
+
+## FPNN AdvanceAnswer
+
+### Method
+
+	public static bool SendAnswer(Answer answer);
+
+Return answer to server before the `QuestProcessDelegate` returned.
+
+If the static method called, the `QuestProcessDelegate` MUST return `null` for two way quest.
