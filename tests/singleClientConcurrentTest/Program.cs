@@ -203,8 +203,7 @@ namespace singleClientConcurrentTest
             if (args.Length != 2)
             {
                 Console.WriteLine("Usage: asyncStressClient <ip> <port>");
-                //return;
-                args = new string[] { "52.83.245.22", "13609" };
+                return;
             }
 
             //-- For record exception infos.
